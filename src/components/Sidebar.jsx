@@ -1,29 +1,70 @@
 import React from "react";
 
-const Sidebar = ({ setActiveFilter, setSliderValue }) => {
+const Sidebar = ({
+  activeFilter,
+  setActiveFilter,
+  setSliderValue,
+  sliderValues,
+}) => {
+  const btnStyles =
+    "rounded-lg transition-all mt-2 mx-3 py-8 border-black border hover:bg-[#393E46] hover:text-white";
+
+  const activeStyles =
+    "rounded-lg transition-all mt-2 mx-3 py-8 border-black border bg-[#222831] text-white hover:bg-[#222831] hover:text-white";
+
   return (
-    <div className="flex flex-col w-fit h-screen border-black border">
+    <div className="bg-[#00ADB5] flex flex-col h-screen border-black border w-48 overflow-auto">
+      <h2 className="text-center text-2xl font-medium py-2 border-black border-b">
+        Filters
+      </h2>
       <button
         onClick={() => {
-          setActiveFilter("brightness"), setSliderValue("100");
+          setActiveFilter("brightness"),
+            setSliderValue(sliderValues.brightness);
         }}
-        className="px-4 mb-1 py-8 border-black border-b focus:bg-black focus:text-white hover:bg-black hover:text-white"
+        className={activeFilter === "brightness" ? activeStyles : btnStyles}
       >
         Brightness
       </button>
       <button
         onClick={() => {
-          setActiveFilter("saturate"), setSliderValue("100");
+          setActiveFilter("contrast"), setSliderValue(sliderValues.contrast);
         }}
-        className="px-4 my-1 py-8 border-black border-y focus:bg-black focus:text-white hover:bg-black hover:text-white"
+        className={activeFilter === "contrast" ? activeStyles : btnStyles}
       >
-        Saturation
+        Contrast
       </button>
-      <button className="px-4 my-1 py-8 border-black border-y focus:bg-black focus:text-white hover:bg-black hover:text-white">
-        Inversion
-      </button>
-      <button className="px-4 my-1 py-8 border-black border-y focus:bg-black focus:text-white hover:bg-black hover:text-white">
+      <button
+        onClick={() => {
+          setActiveFilter("grayscale"), setSliderValue(sliderValues.grayscale);
+        }}
+        className={activeFilter === "grayscale" ? activeStyles : btnStyles}
+      >
         Grayscale
+      </button>
+      <button
+        onClick={() => {
+          setActiveFilter("invert"), setSliderValue(sliderValues.invert);
+        }}
+        className={activeFilter === "invert" ? activeStyles : btnStyles}
+      >
+        Invert
+      </button>
+      <button
+        onClick={() => {
+          setActiveFilter("saturate"), setSliderValue(sliderValues.saturate);
+        }}
+        className={activeFilter === "saturate" ? activeStyles : btnStyles}
+      >
+        Saturate
+      </button>
+      <button
+        onClick={() => {
+          setActiveFilter("sepia"), setSliderValue(sliderValues.sepia);
+        }}
+        className={activeFilter === "sepia" ? activeStyles : btnStyles}
+      >
+        Sepia
       </button>
     </div>
   );

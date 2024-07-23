@@ -4,7 +4,6 @@ import { IoImagesSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-
   const navigate = useNavigate();
 
   const imgRef = useRef();
@@ -17,8 +16,9 @@ const Home = () => {
     // resetFilter();
   };
   return (
-    <div className="h-screen flex flex-col justify-center items-center">
-      <div className="border-2 w-72 h-72 border-black">
+    <div className="h-screen flex flex-col justify-center items-center bg-[#00ADB5]">
+      <h1 className="text-4xl mb-14 text-[#222831] font-semibold">EditR</h1>
+      <div className="bg-slate-300 transition-all  hover:bg-[#222831] group border-2 w-72 h-72 rounded-lg border-black">
         <input
           ref={imgRef}
           type="file"
@@ -30,10 +30,12 @@ const Home = () => {
           className="w-full h-full flex justify-center items-center"
           onClick={() => imgRef.current.click()}
         >
-          <IoImagesSharp className="text-9xl" />
+          <IoImagesSharp className="text-9xl text-[#222831] transition-all group-hover:text-slate-300 " />
         </button>
       </div>
-      <h2 className="text-2xl my-5">Choose an Image to Edit</h2>
+      <h2 className="text-3xl text-[#393E46] font-medium my-5">
+        Choose an Image to Edit
+      </h2>
       {/* {previewImg && <img src={URL.createObjectURL(previewImg)} alt="" />} */}
     </div>
   );
