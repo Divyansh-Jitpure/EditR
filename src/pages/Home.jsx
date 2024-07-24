@@ -12,13 +12,13 @@ const Home = () => {
     const file = e.target.files[0];
     if (!file) return;
     navigate("/edit", { state: { file: file } });
-
-    // resetFilter();
   };
   return (
-    <div className="h-screen flex flex-col justify-center items-center bg-[#00ADB5]">
-      <h1 className="text-4xl mb-14 text-[#222831] font-semibold">EditR</h1>
-      <div className="bg-slate-300 transition-all  hover:bg-[#222831] group border-2 w-72 h-72 rounded-lg border-black">
+    <div className="flex h-screen flex-col items-center justify-center">
+      <h1 className="mb-14 text-5xl font-semibold tracking-tighter text-[#222831]">
+        {"< EditR / >"}
+      </h1>
+      <div className="group h-60 w-60 rounded-lg border-2 border-black bg-[#222831] shadow-lg shadow-slate-600 transition-all hover:h-64 hover:w-64 hover:bg-slate-300 active:bg-[#222831]">
         <input
           ref={imgRef}
           type="file"
@@ -27,13 +27,13 @@ const Home = () => {
           hidden
         />
         <button
-          className="w-full h-full flex justify-center items-center"
+          className="flex h-full w-full items-center justify-center transition-all"
           onClick={() => imgRef.current.click()}
         >
-          <IoImagesSharp className="text-9xl text-[#222831] transition-all group-hover:text-slate-300 " />
+          <IoImagesSharp className="text-9xl text-slate-300 group-hover:text-[#222831] group-active:text-slate-300" />
         </button>
       </div>
-      <h2 className="text-3xl text-[#393E46] font-medium my-5">
+      <h2 className="my-5 text-3xl font-medium text-[#393E46]">
         Choose an Image to Edit
       </h2>
       {/* {previewImg && <img src={URL.createObjectURL(previewImg)} alt="" />} */}
