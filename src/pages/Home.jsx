@@ -1,24 +1,32 @@
 import React, { useRef, useState } from "react";
 import { IoImagesSharp } from "react-icons/io5";
-// import { redirect } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
+// Home Page
 const Home = () => {
   const navigate = useNavigate();
 
+  // Image ref of file Input
   const imgRef = useRef();
 
+  // Load image function that gets image from file input and sends it to Edit Page
   const loadImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    navigate("/edit", { state: { file: file } });
+    navigate("/edit", { state: { file } });
   };
+
   return (
-    <div className="flex h-screen flex-col items-center justify-center">
-      <h1 className="mb-14 text-5xl font-semibold tracking-tighter text-[#222831]">
+    // Home Div
+    <div className="flex h-screen flex-col items-center justify-center bg-home-bg bg-cover bg-center">
+      {/* Title */}
+      <h1 className="mb-14 text-5xl font-semibold tracking-tighter text-[#00ADB5]">
         {"< EditR / >"}
       </h1>
-      <div className="group h-60 w-60 rounded-lg border-2 border-black bg-[#222831] shadow-lg shadow-slate-600 transition-all hover:h-64 hover:w-64 hover:bg-slate-300 active:bg-[#222831]">
+
+      {/* Choose Image button Div */}
+      <div className="h-60 w-60 overflow-hidden rounded-lg bg-[#222831] shadow-lg shadow-slate-600">
+        {/* File input to choose image from local device */}
         <input
           ref={imgRef}
           type="file"
@@ -26,17 +34,22 @@ const Home = () => {
           onChange={loadImage}
           hidden
         />
+
+        {/* Button linked with file input above with ref */}
         <button
-          className="flex h-full w-full items-center justify-center transition-all"
+          className="group relative h-full w-full overflow-hidden"
           onClick={() => imgRef.current.click()}
         >
-          <IoImagesSharp className="text-9xl text-slate-300 group-hover:text-[#222831] group-active:text-slate-300" />
+          {/* Photo Icon */}
+          <IoImagesSharp className="mx-auto text-9xl text-[#cecece] transition-all group-hover:text-[#EEEEEE]" />
+          {/* Wave animation Div */}
+          <div className="wave absolute left-0 top-full h-full w-full opacity-0 group-hover:top-44 group-hover:opacity-100"></div>
         </button>
       </div>
+      {/* Kinda a lable for above input */}
       <h2 className="my-5 text-3xl font-medium text-[#393E46]">
         Choose an Image to Edit
       </h2>
-      {/* {previewImg && <img src={URL.createObjectURL(previewImg)} alt="" />} */}
     </div>
   );
 };

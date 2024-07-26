@@ -64,3 +64,23 @@ body {
     background: #00f2ff;
     cursor: pointer;
 }
+
+.wave {
+    background: url(./assets/wave.svg);
+    background-size: 300% 30%;
+    background-repeat: repeat-x;
+    animation: wave 8s linear infinite;
+    opacity: 0;
+    transition: all 0.8s;
+}
+
+
+@keyframes wave {
+    from {
+        background-position-x: 0;
+    }
+
+    to {
+        background-position-x: 600%;
+    }
+}

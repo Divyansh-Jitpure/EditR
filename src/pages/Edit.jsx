@@ -3,26 +3,46 @@ import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 // import Topbar from "../components/Topbar";
 
+// Edit Section on Editing page
 const Edit = () => {
-  const [brightness, setBrightness] = useState("100");
+  // Filter States
+  const [brightness, setBrightness] = useState(100);
   const [contrast, setContrast] = useState("100");
   const [saturate, setSaturate] = useState("100");
   const [sepia, setSepia] = useState("0");
   const [invert, setInvert] = useState("0");
   const [grayscale, setGrayscale] = useState("0");
 
+  // Slider Value state
   const [sliderValue, setSliderValue] = useState(100);
 
+  // Active filter state
   const [activeFilter, setActiveFilter] = useState("brightness");
 
+  // Refs for image and slider
   const imageRef = useRef();
+  const sliderRef = useRef();
 
+  // file object aka the image state sent by Home page
   let file = useLocation().state.file;
+  let fileName = file.name.split("."); //filename fetched from file object
 
+  // ApplyFilter function that has all the preset css filters with dynamic filter states values
   const applyFilter = () => {
     imageRef.current.style.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%)`;
   };
 
+  // resetFilter function resets all the filter values back to initial values
+  const resetFilter = () => {
+    setBrightness(100);
+    setContrast(100);
+    setGrayscale(0);
+    setInvert(0);
+    setSaturate(100);
+    setSepia(0);
+  };
+
+  // resetSlider function resets the slider value after resetFiter function runs
   const resetSlider = () => {
     switch (activeFilter) {
       case "brightness":
@@ -45,19 +65,40 @@ const Edit = () => {
     }
   };
 
-  const resetFilter = () => {
-    setBrightness(100);
-    setContrast(100);
-    setGrayscale(0);
-    setInvert(0);
-    setSaturate(100);
-    setSepia(0);
-  };
-
+  // This useEffect is running resetSlider function whenever resetFilter function is triggering
   useEffect(() => {
     resetSlider();
   }, [resetFilter]);
 
+  // SaveImage function renders the Edited image with canvas api drawImage and other features and then downloading it
+  const saveImage = () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const image = new Image();
+    image.onload = () => {
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+
+      ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%)`;
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.drawImage(
+        image,
+        -canvas.width / 2,
+        -canvas.height / 2,
+        canvas.width,
+        canvas.height,
+      );
+
+      const link = document.createElement("a");
+      link.download = `${fileName[0]} - Edited with EditR.${fileName[1]}`;
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+
+    image.src = URL.createObjectURL(file);
+  };
+
+  // handleSliderChange function sets the values for slider value state and filter states onChange of the slider
   const handleSliderChange = (e) => {
     setSliderValue(e.target.value);
     switch (activeFilter) {
@@ -79,6 +120,16 @@ const Edit = () => {
       default:
         setSepia(e.target.value);
     }
+  };
+
+  const wheelControl = (e) => {
+    if (e.deltaY < 0) {
+      sliderRef.current.valueAsNumber += 2;
+    } else {
+      sliderRef.current.valueAsNumber -= 2;
+    }
+
+    handleSliderChange(e);
   };
 
   return (
@@ -132,22 +183,24 @@ const Edit = () => {
               ? "200"
               : "100"
           }
+          ref={sliderRef}
           value={sliderValue}
           onChange={handleSliderChange}
+          onWheel={wheelControl}
         />
       </div>
       <button
         onClick={resetFilter}
-        className="absolute bottom-16 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#00f2ff] active:bg-[#393E46]"
+        className="absolute bottom-32 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#00f2ff] active:bg-[#393E46]"
       >
         Reset Filters
       </button>
-      {/* <button
-        // onClick={resetFilter}
+      <button
+        onClick={saveImage}
         className="absolute bottom-16 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#4ff6ff] active:bg-[#393E46]"
       >
         Save Image
-      </button> */}
+      </button>
     </div>
   );
 };
