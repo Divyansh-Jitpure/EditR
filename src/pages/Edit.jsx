@@ -7,17 +7,23 @@ import Sidebar from "../components/Sidebar";
 const Edit = () => {
   // Filter States
   const [brightness, setBrightness] = useState(100);
-  const [contrast, setContrast] = useState("100");
-  const [saturate, setSaturate] = useState("100");
-  const [sepia, setSepia] = useState("0");
-  const [invert, setInvert] = useState("0");
-  const [grayscale, setGrayscale] = useState("0");
+  const [contrast, setContrast] = useState(100);
+  const [saturate, setSaturate] = useState(100);
+  const [sepia, setSepia] = useState(0);
+  const [invert, setInvert] = useState(0);
+  const [grayscale, setGrayscale] = useState(0);
+  const [exposure, setExposure] = useState(100);
+  const [vibrance, setVibrance] = useState(100);
+
+  // Custom Filter States
+  const [exposureFilter, setExposureFilter] = useState("");
+  const [vibranceFilter, setVibranceFilter] = useState("");
 
   // Slider Value state
   const [sliderValue, setSliderValue] = useState(100);
 
   // Active filter state
-  const [activeFilter, setActiveFilter] = useState("brightness");
+  const [activeFilter, setActiveFilter] = useState("exposure");
 
   // Refs for image and slider
   const imageRef = useRef();
@@ -29,7 +35,7 @@ const Edit = () => {
 
   // ApplyFilter function that has all the preset css filters with dynamic filter states values
   const applyFilter = () => {
-    imageRef.current.style.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%)`;
+    imageRef.current.style.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%) ${exposureFilter} ${vibranceFilter}`;
   };
 
   // resetFilter function resets all the filter values back to initial values
@@ -40,6 +46,8 @@ const Edit = () => {
     setInvert(0);
     setSaturate(100);
     setSepia(0);
+    setExposure(100);
+    setVibrance(100);
   };
 
   // resetSlider function resets the slider value after resetFiter function runs
@@ -60,6 +68,12 @@ const Edit = () => {
       case "saturate":
         setSliderValue(saturate);
         break;
+      case "exposure":
+        setSliderValue(exposure);
+        break;
+      case "vibrance":
+        setSliderValue(vibrance);
+        break;
       default:
         setSliderValue(sepia);
     }
@@ -79,7 +93,7 @@ const Edit = () => {
       canvas.width = image.naturalWidth;
       canvas.height = image.naturalHeight;
 
-      ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%)`;
+      ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%) ${exposureFilter} ${vibranceFilter}`;
       ctx.translate(canvas.width / 2, canvas.height / 2);
       ctx.drawImage(
         image,
@@ -117,6 +131,12 @@ const Edit = () => {
       case "saturate":
         setSaturate(e.target.value);
         break;
+      case "exposure":
+        setExposure(e.target.value);
+        break;
+      case "vibrance":
+        setVibrance(e.target.value);
+        break;
       default:
         setSepia(e.target.value);
     }
@@ -124,13 +144,25 @@ const Edit = () => {
 
   const wheelControl = (e) => {
     if (e.deltaY < 0) {
-      sliderRef.current.valueAsNumber += 2;
+      sliderRef.current.valueAsNumber += 3;
     } else {
-      sliderRef.current.valueAsNumber -= 2;
+      sliderRef.current.valueAsNumber -= 3;
     }
 
     handleSliderChange(e);
   };
+
+  useEffect(() => {
+    setExposureFilter(
+      `brightness(${Number(exposure) + 0.2}%) contrast(${Number(exposure) + 0.1}%) saturate(${Number(exposure) + 0.05}%)`,
+    );
+  }, [handleSliderChange]);
+
+  useEffect(() => {
+    setVibranceFilter(
+      `brightness(${Number(vibrance) + 0.1}%) contrast(${Number(vibrance) + 0.1}%) saturate(${Number(vibrance) + 0.2}%)`,
+    );
+  }, [handleSliderChange]);
 
   return (
     <div className="flex items-center overflow-hidden">
@@ -145,6 +177,8 @@ const Edit = () => {
           invert,
           saturate,
           sepia,
+          exposure,
+          vibrance,
         }}
       />
       <h1 className="pointer-events-none absolute right-4 top-3 mb-14 text-4xl font-semibold tracking-tighter text-[#00ADB5]">
@@ -157,10 +191,16 @@ const Edit = () => {
         }}
         className="mx-auto flex h-screen w-full flex-col items-center"
       >
+        <span
+          onClick={resetFilter}
+          className="my-3 w-fit rounded-lg border-x-2 border-b-4 border-[#00ADB5] p-2 text-center text-xl font-medium text-[#EEEEEE] transition"
+        >
+          {fileName[0] + "." + fileName[1]}
+        </span>
         <div className="m-auto">
           {file && (
             <img
-              className="h-full max-h-[450px] w-full max-w-2xl object-contain"
+              className="mx-auto h-full max-h-[450px] object-contain xl:max-w-[90%] 2xl:max-w-full"
               ref={imageRef}
               src={URL.createObjectURL(file)}
               onLoad={applyFilter}
@@ -179,7 +219,9 @@ const Edit = () => {
           max={
             activeFilter === "brightness" ||
             activeFilter === "contrast" ||
-            activeFilter === "saturate"
+            activeFilter === "saturate" ||
+            activeFilter === "exposure" ||
+            activeFilter === "vibrance"
               ? "200"
               : "100"
           }
