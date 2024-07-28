@@ -15,6 +15,11 @@ const Edit = () => {
   const [exposure, setExposure] = useState(100);
   const [vibrance, setVibrance] = useState(100);
 
+  // Transform States
+  const [rotate, setRotate] = useState(0);
+  const [flipHorizontal, setFlipHorizontal] = useState(1);
+  const [flipVertical, setFlipVertical] = useState(1);
+
   // Custom Filter States
   const [exposureFilter, setExposureFilter] = useState("");
   const [vibranceFilter, setVibranceFilter] = useState("");
@@ -36,6 +41,7 @@ const Edit = () => {
   // ApplyFilter function that has all the preset css filters with dynamic filter states values
   const applyFilter = () => {
     imageRef.current.style.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%) ${exposureFilter} ${vibranceFilter}`;
+    imageRef.current.style.transform = `rotate(${rotate}deg) scale(${flipHorizontal}, ${flipVertical})`;
   };
 
   // resetFilter function resets all the filter values back to initial values
@@ -48,6 +54,9 @@ const Edit = () => {
     setSepia(0);
     setExposure(100);
     setVibrance(100);
+    setRotate(0);
+    setFlipHorizontal(1);
+    setFlipVertical(1);
   };
 
   // resetSlider function resets the slider value after resetFiter function runs
@@ -164,12 +173,25 @@ const Edit = () => {
     );
   }, [handleSliderChange]);
 
+  const handleRotate = (activeTransform) => {
+    if (activeTransform === "left") {
+      setRotate(rotate - 90);
+    } else if (activeTransform === "right") {
+      setRotate(rotate + 90);
+    } else if (activeTransform === "horizontal") {
+      setFlipHorizontal(flipHorizontal === 1 ? -1 : 1);
+    } else {
+      setFlipVertical(flipVertical === 1 ? -1 : 1);
+    }
+  };
+
   return (
     <div className="flex items-center overflow-hidden">
       <Sidebar
         activeFilter={activeFilter}
         setActiveFilter={setActiveFilter}
         setSliderValue={setSliderValue}
+        handleRotate={handleRotate}
         sliderValues={{
           brightness,
           contrast,
@@ -207,11 +229,11 @@ const Edit = () => {
             />
           )}
         </div>
-        <div className="my-5 flex w-60 justify-between text-xl font-medium capitalize text-[#EEEEEE]">
+        {/* <div className="my-5 flex w-60 justify-between text-xl font-medium capitalize text-[#EEEEEE]">
           <span>{activeFilter}</span>
           <span>{sliderValue}%</span>
-        </div>
-        <input
+        </div> */}
+        {/* <input
           className="slider mb-9 h-2 w-72 cursor-pointer rounded-lg bg-[#EEEEEE]"
           type="range"
           name="slider"
@@ -229,7 +251,7 @@ const Edit = () => {
           value={sliderValue}
           onChange={handleSliderChange}
           onWheel={wheelControl}
-        />
+        /> */}
       </div>
       <button
         onClick={resetFilter}
