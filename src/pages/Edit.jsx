@@ -36,6 +36,7 @@ const Edit = () => {
 
   // file object aka the image state sent by Home page
   let file = useLocation().state.file;
+  let fileNameExt = file.name;
   let fileName = file.name.split("."); //filename fetched from file object
 
   // ApplyFilter function that has all the preset css filters with dynamic filter states values
@@ -98,19 +99,28 @@ const Edit = () => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const image = new Image();
+
     image.onload = () => {
-      canvas.width = image.naturalWidth;
-      canvas.height = image.naturalHeight;
+      const width = image.naturalWidth;
+      const height = image.naturalHeight;
+      const angle = (rotate * Math.PI) / 180;
+
+      // Calculate the new canvas dimensions based on the rotated image
+      const newWidth =
+        Math.abs(width * Math.cos(angle)) + Math.abs(height * Math.sin(angle));
+      const newHeight =
+        Math.abs(width * Math.sin(angle)) + Math.abs(height * Math.cos(angle));
+
+      canvas.width = newWidth;
+      canvas.height = newHeight;
 
       ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%) ${exposureFilter} ${vibranceFilter}`;
-      ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.drawImage(
-        image,
-        -canvas.width / 2,
-        -canvas.height / 2,
-        canvas.width,
-        canvas.height,
-      );
+      ctx.translate(newWidth / 2, newHeight / 2);
+      if (rotate !== 0) {
+        ctx.rotate(angle);
+      }
+      ctx.scale(flipHorizontal, flipVertical);
+      ctx.drawImage(image, -width / 2, -height / 2, width, height);
 
       const link = document.createElement("a");
       link.download = `${fileName[0]} - Edited with EditR.${fileName[1]}`;
@@ -187,6 +197,12 @@ const Edit = () => {
 
   return (
     <div className="flex items-center overflow-hidden">
+      <title>
+        EditR -{" "}
+        {fileName[0].length > 10
+          ? fileName[0].slice(0, 10) + `.......  .` + fileName[1]
+          : fileNameExt}
+      </title>
       <Sidebar
         activeFilter={activeFilter}
         setActiveFilter={setActiveFilter}
@@ -211,57 +227,53 @@ const Edit = () => {
           backgroundImage:
             "radial-gradient( circle farthest-corner at 0.5% 2%,  rgba(57,62,70,1) 0%, rgba(57,62,70,0.81) 90% )",
         }}
-        className="mx-auto flex h-screen w-full flex-col items-center"
+        className="mx-auto flex h-screen w-full flex-col items-center justify-around"
       >
-        <span
-          onClick={resetFilter}
-          className="my-3 w-fit rounded-lg border-x-2 border-b-4 border-[#00ADB5] p-2 text-center text-xl font-medium text-[#EEEEEE] transition"
-        >
-          {fileName[0] + "." + fileName[1]}
-        </span>
-        <div className="m-auto">
+        <div className="">
           {file && (
             <img
-              className="mx-auto h-full max-h-[450px] object-contain xl:max-w-[90%] 2xl:max-w-full"
+              className="mx-auto max-h-[500px] object-contain xl:max-w-[80%] 2xl:max-w-full"
               ref={imageRef}
               src={URL.createObjectURL(file)}
               onLoad={applyFilter}
             />
           )}
         </div>
-        {/* <div className="my-5 flex w-60 justify-between text-xl font-medium capitalize text-[#EEEEEE]">
-          <span>{activeFilter}</span>
-          <span>{sliderValue}%</span>
-        </div> */}
-        {/* <input
-          className="slider mb-9 h-2 w-72 cursor-pointer rounded-lg bg-[#EEEEEE]"
-          type="range"
-          name="slider"
-          min="0"
-          max={
-            activeFilter === "brightness" ||
-            activeFilter === "contrast" ||
-            activeFilter === "saturate" ||
-            activeFilter === "exposure" ||
-            activeFilter === "vibrance"
-              ? "200"
-              : "100"
-          }
-          ref={sliderRef}
-          value={sliderValue}
-          onChange={handleSliderChange}
-          onWheel={wheelControl}
-        /> */}
+        <div className="flex flex-col items-center justify-between rounded-lg bg-[#757f8e68] px-4 pb-5 pt-3">
+          <div className="flex w-60 justify-between pb-1 text-xl font-medium capitalize text-[#EEEEEE]">
+            <span>{activeFilter}</span>
+            <span>{sliderValue}%</span>
+          </div>
+          <input
+            className="slider mt-3 h-2 w-72 cursor-pointer rounded-lg bg-[#EEEEEE]"
+            type="range"
+            name="slider"
+            min="0"
+            max={
+              activeFilter === "brightness" ||
+              activeFilter === "contrast" ||
+              activeFilter === "saturate" ||
+              activeFilter === "exposure" ||
+              activeFilter === "vibrance"
+                ? "200"
+                : "100"
+            }
+            ref={sliderRef}
+            value={sliderValue}
+            onChange={handleSliderChange}
+            onWheel={wheelControl}
+          />
+        </div>
       </div>
       <button
         onClick={resetFilter}
-        className="absolute bottom-32 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#00f2ff] active:bg-[#393E46]"
+        className="absolute bottom-24 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#00f2ff] active:bg-[#393E46]"
       >
         Reset Filters
       </button>
       <button
         onClick={saveImage}
-        className="absolute bottom-16 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#4ff6ff] active:bg-[#393E46]"
+        className="absolute bottom-9 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#4ff6ff] active:bg-[#393E46]"
       >
         Save Image
       </button>

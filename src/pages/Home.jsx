@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { IoImagesSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const Home = () => {
   const loadImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    navigate("/edit", { state: { file } });
+    navigate("/edit/" + file.name, { state: { file } });
   };
 
   return (
