@@ -2,6 +2,28 @@ import React, { useRef } from "react";
 import { IoImagesSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics, logEvent } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyA1mu0Nv7DtEhBaSLoTasug-THynNqibF8",
+  authDomain: "the-editr.firebaseapp.com",
+  projectId: "the-editr",
+  storageBucket: "the-editr.appspot.com",
+  messagingSenderId: "1039745812606",
+  appId: "1:1039745812606:web:e91299b19c75b5fd50702f",
+  measurementId: "G-N5Q5B0ZS2L",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 // Home Page
 const Home = () => {
   const navigate = useNavigate();
@@ -39,7 +61,10 @@ const Home = () => {
         {/* Button linked with file input above with ref */}
         <button
           className="group relative h-full w-full overflow-hidden"
-          onClick={() => imgRef.current.click()}
+          onClick={() => {
+            imgRef.current.click();
+            logEvent(analytics);
+          }}
         >
           {/* Photo Icon */}
           <IoImagesSharp className="mx-auto text-9xl text-[#cecece] transition-all group-hover:text-[#EEEEEE]" />
