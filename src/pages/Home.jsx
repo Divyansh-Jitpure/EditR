@@ -13,7 +13,7 @@ const Home = () => {
   const loadImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    navigate("/edit/" + file.name, { state: { file } });
+    navigate("/edit", { state: { file } });
   };
 
   return (
