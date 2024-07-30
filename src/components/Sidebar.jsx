@@ -10,7 +10,7 @@ const Sidebar = ({
   handleRotate,
 }) => {
   return (
-    <div className="flex h-screen w-60 flex-col items-center overflow-auto bg-gradient-to-t from-[#00929a] to-[#00f2ff]">
+    <div className="flex h-screen w-60 flex-col items-center overflow-auto bg-gradient-to-t from-[#429195] to-[#00f2ff]">
       <h2 className="my-4 text-3xl font-medium">Tools</h2>
       <Filters
         sliderValues={sliderValues}

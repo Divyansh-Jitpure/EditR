@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 const Filters = ({
   activeFilter,
@@ -6,19 +6,21 @@ const Filters = ({
   setSliderValue,
   sliderValues,
 }) => {
-  const [accordionOpen, setaccordionOpen] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState(false);
+  const contentRef = useRef(null);
 
   const btnStyles =
-    "rounded-lg transition-all text-xl font-medium mb-2 mx-3 py-7 border-black border-2 hover:bg-[#393E46] hover:text-[#EEEEEE] capitalize";
+    "rounded-lg transition-all text-xl w-32 font-medium mb-2 mx-3 py-7 border-black border-2 hover:bg-[#393E46] hover:text-[#EEEEEE] capitalize";
 
   const activeStyles =
-    "rounded-lg transition-all text-xl font-medium mb-2 mx-3 py-7 border-black border bg-[#222831] text-white hover:bg-[#222831] hover:text-[#EEEEEE] capitalize";
+    "rounded-lg transition-all text-xl w-32 font-medium mb-2 mx-3 py-7 border-black  border bg-[#222831] text-white hover:bg-[#222831] hover:text-[#EEEEEE] capitalize";
 
   const Filter = (props) => {
     return (
       <button
         onClick={() => {
-          setActiveFilter(props.filter), setSliderValue(props.sliderValue);
+          setActiveFilter(props.filter);
+          setSliderValue(props.sliderValue);
         }}
         className={activeFilter === props.filter ? activeStyles : btnStyles}
       >
@@ -27,10 +29,22 @@ const Filters = ({
     );
   };
 
+  const toggleAccordion = () => {
+    setAccordionOpen(!accordionOpen);
+  };
+
+  useEffect(() => {
+    if (accordionOpen) {
+      contentRef.current.style.maxHeight = `${contentRef.current.scrollHeight}px`;
+    } else {
+      contentRef.current.style.maxHeight = "0px";
+    }
+  }, [accordionOpen]);
+
   return (
     <div className="flex w-[90%] flex-col">
       <button
-        onClick={() => setaccordionOpen(!accordionOpen)}
+        onClick={toggleAccordion}
         className="mb-3 mt-1 flex items-center justify-between border-y-2 border-black py-2 text-center text-3xl font-medium"
       >
         <span>Filters</span>
@@ -61,7 +75,8 @@ const Filters = ({
         </svg>
       </button>
       <div
-        className={`flex flex-col overflow-hidden px-2 transition-all duration-300 ease-in-out ${accordionOpen ? "block" : "hidden"}`}
+        ref={contentRef}
+        className="transition-max-height flex max-h-0 flex-col overflow-hidden px-2 duration-300 ease-in"
       >
         <Filter filter="exposure" sliderValue={sliderValues.exposure} />
         <Filter filter="brightness" sliderValue={sliderValues.brightness} />

@@ -19,6 +19,7 @@ const Home = () => {
   return (
     // Home Div
     <div className="flex h-screen flex-col items-center justify-center bg-home-bg bg-cover bg-center">
+      <title>EditR - Image Editor</title>
       {/* Title */}
       <h1 className="mb-14 text-5xl font-semibold tracking-tighter text-[#00ADB5]">
         {"< EditR / >"}
