@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
+import MobileTools from "../components/MobileTools";
 // import Topbar from "../components/Topbar";
 
 // Edit Section on Editing page
@@ -219,33 +220,46 @@ const Edit = () => {
           vibrance,
         }}
       />
-      <h1 className="pointer-events-none absolute right-4 top-3 mb-14 text-4xl font-semibold tracking-tighter text-[#00ADB5]">
+      <h1 className="pointer-events-none absolute right-4 top-3 mb-14 hidden text-4xl font-semibold tracking-tighter text-[#00ADB5] md:block">
         {"< EditR / >"}
       </h1>
-      <div
-        style={{
-          backgroundImage:
-            "radial-gradient( circle farthest-corner at 0.5% 2%,  rgba(57,62,70,1) 0%, rgba(57,62,70,0.81) 90% )",
-        }}
-        className="mx-auto flex h-screen w-full flex-col items-center justify-around"
-      >
+
+      <div className="mx-auto flex h-screen w-full flex-col items-center justify-evenly bg-gradient-to-t from-[rgba(57,62,70,1)] to-[rgba(57,62,70)]">
+        <div className="flex w-full justify-between md:hidden">
+          <button
+            onClick={resetFilter}
+            className="ml-3 mt-10 text-3xl text-slate-300"
+          >
+            Reset
+          </button>
+          <h1 className="text-4xl font-semibold tracking-tighter text-[#00ADB5]">
+            {"< EditR / >"}
+          </h1>
+          <button
+            onClick={saveImage}
+            className="mr-3 mt-10 text-3xl text-slate-300"
+          >
+            Save
+          </button>
+        </div>
         <div className="">
           {file && (
             <img
-              className="mx-auto max-h-[500px] object-contain xl:max-w-[80%] 2xl:max-w-full"
+              className="mx-auto max-h-[400px] object-contain md:max-h-[500px] xl:max-w-[80%] 2xl:max-w-full"
               ref={imageRef}
               src={URL.createObjectURL(file)}
               onLoad={applyFilter}
             />
           )}
         </div>
-        <div className="flex flex-col items-center justify-between rounded-lg bg-[#757f8e68] px-4 pb-5 pt-3">
-          <div className="flex w-60 justify-between pb-1 text-xl font-medium capitalize text-[#EEEEEE]">
+
+        <div className="flex flex-col items-center justify-between rounded-lg px-4 py-3 md:bg-[#757f8e68] md:pb-5 md:pt-3">
+          <div className="hidden w-60 justify-between pb-1 text-xl font-medium capitalize text-[#EEEEEE] md:flex">
             <span>{activeFilter}</span>
             <span>{sliderValue}%</span>
           </div>
           <input
-            className="slider mt-3 h-2 w-72 cursor-pointer rounded-lg bg-[#EEEEEE]"
+            className="slider h-2 w-72 cursor-pointer rounded-lg md:mt-3"
             type="range"
             name="slider"
             min="0"
@@ -264,16 +278,32 @@ const Edit = () => {
             onWheel={wheelControl}
           />
         </div>
+        <MobileTools
+          activeFilter={activeFilter}
+          setActiveFilter={setActiveFilter}
+          setSliderValue={setSliderValue}
+          handleRotate={handleRotate}
+          sliderValues={{
+            brightness,
+            contrast,
+            grayscale,
+            invert,
+            saturate,
+            sepia,
+            exposure,
+            vibrance,
+          }}
+        />
       </div>
       <button
         onClick={resetFilter}
-        className="absolute bottom-24 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#00f2ff] active:bg-[#393E46]"
+        className="absolute bottom-24 right-10 hidden rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#00f2ff] active:bg-[#393E46] md:block"
       >
         Reset Filters
       </button>
       <button
         onClick={saveImage}
-        className="absolute bottom-9 right-10 rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#4ff6ff] active:bg-[#393E46]"
+        className="absolute bottom-9 right-10 hidden rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#4ff6ff] active:bg-[#393E46] md:block"
       >
         Save Image
       </button>
