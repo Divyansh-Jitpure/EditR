@@ -224,8 +224,8 @@ const Edit = () => {
         {"< EditR / >"}
       </h1>
 
-      <div className="mx-auto flex h-screen w-full flex-col items-center justify-evenly bg-gradient-to-t from-[rgba(57,62,70,1)] to-[rgba(57,62,70)]">
-        <div className="flex w-full justify-between md:hidden">
+      <div className="mx-auto flex h-screen w-full flex-col items-center justify-between bg-gradient-to-t from-[rgba(57,62,70,1)] to-[rgba(57,62,70)]">
+        <div className="mt-2 flex w-full justify-between md:hidden">
           <button
             onClick={resetFilter}
             className="ml-3 mt-10 text-3xl text-slate-300"

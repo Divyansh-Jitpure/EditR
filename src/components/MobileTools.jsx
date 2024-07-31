@@ -40,7 +40,7 @@ const MobileTools = ({
   };
 
   return (
-    <div className="flex flex-col items-center md:hidden">
+    <div className="flex mb-3 flex-col items-center md:hidden">
       <div className="tab-content">
         <TabContent />
       </div>
