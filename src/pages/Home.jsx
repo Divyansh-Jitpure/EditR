@@ -19,7 +19,7 @@ const Home = () => {
   };
 
   return (
-    // Home Div
+    // Home Component
     <div className="flex h-screen flex-col items-center justify-center bg-home-bg bg-cover bg-center">
       <title>EditR - Image Editor</title>
       {/* Title */}

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import MobileTools from "../components/MobileTools";
-// import Topbar from "../components/Topbar";
+import { saveImage } from "../utils";
 
 // Edit Section on Editing page
 const Edit = () => {
@@ -39,6 +39,22 @@ const Edit = () => {
   let file = useLocation().state.file;
   let fileNameExt = file.name;
   let fileName = file.name.split("."); //filename fetched from file object
+
+  let customFilters = { exposureFilter, vibranceFilter };
+
+  let transformValues = { rotate, flipHorizontal, flipVertical };
+
+  // sliderValues
+  let sliderValues = {
+    brightness,
+    contrast,
+    grayscale,
+    invert,
+    saturate,
+    sepia,
+    exposure,
+    vibrance,
+  };
 
   // ApplyFilter function that has all the preset css filters with dynamic filter states values
   const applyFilter = () => {
@@ -95,43 +111,6 @@ const Edit = () => {
     resetSlider();
   }, [resetFilter]);
 
-  // SaveImage function renders the Edited image with canvas api drawImage and other features and then downloading it
-  const saveImage = () => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    const image = new Image();
-
-    image.onload = () => {
-      const width = image.naturalWidth;
-      const height = image.naturalHeight;
-      const angle = (rotate * Math.PI) / 180;
-
-      // Calculate the new canvas dimensions based on the rotated image
-      const newWidth =
-        Math.abs(width * Math.cos(angle)) + Math.abs(height * Math.sin(angle));
-      const newHeight =
-        Math.abs(width * Math.sin(angle)) + Math.abs(height * Math.cos(angle));
-
-      canvas.width = newWidth;
-      canvas.height = newHeight;
-
-      ctx.filter = `brightness(${brightness}%) contrast(${contrast}%) grayscale(${grayscale}%) invert(${invert}%) saturate(${saturate}%) sepia(${sepia}%) ${exposureFilter} ${vibranceFilter}`;
-      ctx.translate(newWidth / 2, newHeight / 2);
-      if (rotate !== 0) {
-        ctx.rotate(angle);
-      }
-      ctx.scale(flipHorizontal, flipVertical);
-      ctx.drawImage(image, -width / 2, -height / 2, width, height);
-
-      const link = document.createElement("a");
-      link.download = `${fileName[0]} - Edited with EditR.${fileName[1]}`;
-      link.href = canvas.toDataURL();
-      link.click();
-    };
-
-    image.src = URL.createObjectURL(file);
-  };
-
   // handleSliderChange function sets the values for slider value state and filter states onChange of the slider
   const handleSliderChange = (e) => {
     setSliderValue(e.target.value);
@@ -162,6 +141,7 @@ const Edit = () => {
     }
   };
 
+  // Handles mouse wheel control
   const wheelControl = (e) => {
     if (e.deltaY < 0) {
       sliderRef.current.valueAsNumber += 3;
@@ -172,18 +152,21 @@ const Edit = () => {
     handleSliderChange(e);
   };
 
+  // Handles Exposure Filter change
   useEffect(() => {
     setExposureFilter(
       `brightness(${Number(exposure) + 0.2}%) contrast(${Number(exposure) + 0.1}%) saturate(${Number(exposure) + 0.05}%)`,
     );
   }, [handleSliderChange]);
 
+  // Handles Vibrance Filter change
   useEffect(() => {
     setVibranceFilter(
       `brightness(${Number(vibrance) + 0.1}%) contrast(${Number(vibrance) + 0.1}%) saturate(${Number(vibrance) + 0.2}%)`,
     );
   }, [handleSliderChange]);
 
+  // Handles Transforms
   const handleRotate = (activeTransform) => {
     if (activeTransform === "left") {
       setRotate(rotate - 90);
@@ -197,6 +180,7 @@ const Edit = () => {
   };
 
   return (
+    // Edit Component
     <div className="flex items-center overflow-hidden">
       <title>
         EditR -{" "}
@@ -209,22 +193,13 @@ const Edit = () => {
         setActiveFilter={setActiveFilter}
         setSliderValue={setSliderValue}
         handleRotate={handleRotate}
-        sliderValues={{
-          brightness,
-          contrast,
-          grayscale,
-          invert,
-          saturate,
-          sepia,
-          exposure,
-          vibrance,
-        }}
+        sliderValues={sliderValues}
       />
       <h1 className="pointer-events-none absolute right-4 top-3 mb-14 hidden text-4xl font-semibold tracking-tighter text-[#00ADB5] md:block">
         {"< EditR / >"}
       </h1>
 
-      <div className="mx-auto flex h-screen w-full flex-col items-center justify-between bg-gradient-to-t from-[rgba(57,62,70,1)] to-[rgba(57,62,70)]">
+      <div className="mx-auto flex h-screen w-full flex-col items-center justify-between bg-gradient-to-t from-[rgba(57,62,70,1)] to-[rgba(57,62,70)] md:justify-around">
         <div className="mt-2 flex w-full justify-between md:hidden">
           <button
             onClick={resetFilter}
@@ -283,16 +258,7 @@ const Edit = () => {
           setActiveFilter={setActiveFilter}
           setSliderValue={setSliderValue}
           handleRotate={handleRotate}
-          sliderValues={{
-            brightness,
-            contrast,
-            grayscale,
-            invert,
-            saturate,
-            sepia,
-            exposure,
-            vibrance,
-          }}
+          sliderValues={sliderValues}
         />
       </div>
       <button
@@ -302,7 +268,15 @@ const Edit = () => {
         Reset Filters
       </button>
       <button
-        onClick={saveImage}
+        onClick={() =>
+          saveImage(
+            file,
+            fileName,
+            sliderValues,
+            customFilters,
+            transformValues,
+          )
+        }
         className="absolute bottom-9 right-10 hidden rounded-lg border-[1px] border-[#00ADB5] px-6 py-2 text-xl font-medium text-[#EEEEEE] shadow-md shadow-[#00ADB5] transition hover:bg-[#222831] hover:text-[#4ff6ff] active:bg-[#393E46] md:block"
       >
         Save Image
