@@ -1,8 +1,8 @@
-# React + Vite
+🚀 Excited to unveil EditR! An image editor built with React, Tailwind CSS, and Firebase for hosting and deployment. 🎨
+Features:
+- Filter tools: Brightness, contrast, saturation, exposure etc. 
+- Transform tools: Rotate, flip
+- Responsive UI and dynamic functionality
+Edit, transform, and download your images effortlessly!
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Check It Out - [EditR - Image Editor](https://the-editr.web.app/)🚀 Excited to unveil EditR! An image editor built with React, Tailwind CSS, and Firebase for hosting and deployment. 🎨 Features: - Filter tools: Brightness, contrast, saturation, exposure etc. - Transform tools: Rotate, flip - Responsive UI and dynamic functionality Edit, transform, and download your images effortlessly! 
