@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import MobileTools from "../components/MobileTools";
-import { saveImage } from "../utils";
+import { saveImage, resetSlider } from "../utils";
+import Slider from "../components/Slider";
 
 // Edit Section on Editing page
 const Edit = () => {
@@ -77,38 +78,9 @@ const Edit = () => {
     setFlipVertical(1);
   };
 
-  // resetSlider function resets the slider value after resetFiter function runs
-  const resetSlider = () => {
-    switch (activeFilter) {
-      case "brightness":
-        setSliderValue(brightness);
-        break;
-      case "contrast":
-        setSliderValue(contrast);
-        break;
-      case "grayscale":
-        setSliderValue(grayscale);
-        break;
-      case "invert":
-        setSliderValue(invert);
-        break;
-      case "saturate":
-        setSliderValue(saturate);
-        break;
-      case "exposure":
-        setSliderValue(exposure);
-        break;
-      case "vibrance":
-        setSliderValue(vibrance);
-        break;
-      default:
-        setSliderValue(sepia);
-    }
-  };
-
   // This useEffect is running resetSlider function whenever resetFilter function is triggering
   useEffect(() => {
-    resetSlider();
+    resetSlider(sliderValues, activeFilter, setSliderValue);
   }, [resetFilter]);
 
   // handleSliderChange function sets the values for slider value state and filter states onChange of the slider
@@ -148,7 +120,6 @@ const Edit = () => {
     } else {
       sliderRef.current.valueAsNumber -= 3;
     }
-
     handleSliderChange(e);
   };
 
@@ -211,7 +182,15 @@ const Edit = () => {
             {"< EditR / >"}
           </h1>
           <button
-            onClick={saveImage}
+            onClick={() =>
+              saveImage(
+                file,
+                fileName,
+                sliderValues,
+                customFilters,
+                transformValues,
+              )
+            }
             className="mr-3 mt-10 text-3xl text-slate-300"
           >
             Save
@@ -228,31 +207,14 @@ const Edit = () => {
           )}
         </div>
 
-        <div className="flex flex-col items-center justify-between rounded-lg px-4 py-3 md:bg-[#757f8e68] md:pb-5 md:pt-3">
-          <div className="hidden w-60 justify-between pb-1 text-xl font-medium capitalize text-[#EEEEEE] md:flex">
-            <span>{activeFilter}</span>
-            <span>{sliderValue}%</span>
-          </div>
-          <input
-            className="slider h-2 w-72 cursor-pointer rounded-lg md:mt-3"
-            type="range"
-            name="slider"
-            min="0"
-            max={
-              activeFilter === "brightness" ||
-              activeFilter === "contrast" ||
-              activeFilter === "saturate" ||
-              activeFilter === "exposure" ||
-              activeFilter === "vibrance"
-                ? "200"
-                : "100"
-            }
-            ref={sliderRef}
-            value={sliderValue}
-            onChange={handleSliderChange}
-            onWheel={wheelControl}
-          />
-        </div>
+        <Slider
+          activeFilter={activeFilter}
+          sliderValue={sliderValue}
+          sliderRef={sliderRef}
+          handleSliderChange={handleSliderChange}
+          wheelControl={wheelControl}
+        />
+
         <MobileTools
           activeFilter={activeFilter}
           setActiveFilter={setActiveFilter}

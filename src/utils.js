@@ -42,3 +42,45 @@ export const saveImage = (
 
   image.src = URL.createObjectURL(file);
 };
+
+// resetSlider function resets the slider value after resetFiter function runs
+export const resetSlider = (
+  {
+    brightness,
+    contrast,
+    grayscale,
+    invert,
+    saturate,
+    sepia,
+    exposure,
+    vibrance,
+  },
+  activeFilter,
+  setSliderValue,
+) => {
+  switch (activeFilter) {
+    case "brightness":
+      setSliderValue(brightness);
+      break;
+    case "contrast":
+      setSliderValue(contrast);
+      break;
+    case "grayscale":
+      setSliderValue(grayscale);
+      break;
+    case "invert":
+      setSliderValue(invert);
+      break;
+    case "saturate":
+      setSliderValue(saturate);
+      break;
+    case "exposure":
+      setSliderValue(exposure);
+      break;
+    case "vibrance":
+      setSliderValue(vibrance);
+      break;
+    default:
+      setSliderValue(sepia);
+  }
+};
